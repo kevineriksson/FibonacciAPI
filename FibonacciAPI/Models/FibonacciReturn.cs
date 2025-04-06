@@ -1,8 +1,10 @@
 namespace FibonacciAPI.Models;
 
-public class FibonacciReturn
+public class FibonacciResult
 {
-    public IEnumerable<long> FibonacciSequence { get; set; }  = new List<long>();
-    public TimeSpan ElapsedTime { get; set; }
-    public long MemoryUsedKb { get; set; }
+    public List<long> Fibonacci { get; set; } = new();
+    public bool IsPartial { get; set; }
+    public bool TimeoutOccurred { get; set; }
+    public bool MemoryLimitReached { get; set; }
+    public string MemoryLog { get; set; }
 }

@@ -16,22 +16,22 @@ public class FibonacciService : IFibonacciService
         _cache = cache;
     }
 
-    public async Task<FibonacciResult> GenerateFibonacciSubsequenceAsync(int startIndex, int endIndex, bool useCache, int timeoutMs, long maxMemoryBytes)
+    public async Task<FibonacciResult> GenerateFibonacciSubsequenceAsync(FibonacciRequest request)
     {
         var result = new FibonacciResult();
         var startTime = Stopwatch.GetTimestamp();
-        TimeoutLimit = TimeSpan.FromMilliseconds(timeoutMs);
-        MemoryLimit = maxMemoryBytes / 1024; // Store memory limit in KB for comparison
+        TimeoutLimit = TimeSpan.FromMilliseconds(request.TimeoutMs);
+        MemoryLimit = request.MaxMemoryMB * 1_000_000;
 
         try
         {
-            for (int i = startIndex; i <= endIndex; i++)
+            for (int i = request.StartIndex; i <= request.EndIndex; i++)
             {
                 RecordCurrentTimeUsage(startTime);
                 RecordCurrentMemoryUsage();
 
                 long value;
-                if (useCache && _cache.TryGet(i, out value))
+                if (request.UseCache && _cache.TryGet(i, out value))
                 {
                     result.Fibonacci.Add(value);
                     continue;
@@ -39,7 +39,7 @@ public class FibonacciService : IFibonacciService
 
                 value = await ComputeFibonacciAsync(i);
 
-                if (useCache) _cache.Set(i, value);
+                if (request.UseCache) _cache.Set(i, value);
 
                 result.Fibonacci.Add(value);
             }
@@ -85,11 +85,12 @@ public class FibonacciService : IFibonacciService
     private void RecordCurrentMemoryUsage()
     {
         Process currentProcess = Process.GetCurrentProcess();
-        var sizeInKB = currentProcess.PeakWorkingSet64 / 1024;
-        MemoryRecord.Add(sizeInKB);
-        if (sizeInKB > MemoryLimit)
+        var sizeInBytes = currentProcess.WorkingSet64;
+
+        MemoryRecord.Add(sizeInBytes);
+        if (sizeInBytes > MemoryLimit)
         {
-            throw new Exception($"Memory Limit of {MemoryLimit} Exceeded by {sizeInKB - MemoryLimit} KB");
+            throw new Exception($"Memory Limit of {MemoryLimit} bytes exceeded by {sizeInBytes - MemoryLimit} bytes");
         }
     }
 
@@ -103,7 +104,7 @@ public class FibonacciService : IFibonacciService
 
     public string GetTotalProcessMemory()
     {
-        var memResult = "Memory Consumptions for Every Number Generated (KB): " +
+        var memResult = "Memory Consumptions for Every Number Generated (bytes): " +
         string.Join(",", MemoryRecord);
         return memResult;
     }

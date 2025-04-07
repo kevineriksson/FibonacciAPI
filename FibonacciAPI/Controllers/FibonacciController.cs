@@ -1,3 +1,5 @@
+using FibonacciAPI.Interfaces;
+using FibonacciAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -12,11 +14,19 @@ public class FibonacciController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetFibonacciSubsequence(int startIndex, int endIndex, bool useCache, int timeoutMs, long maxMemoryBytes)
+    public async Task<IActionResult> GetFibonacciSubsequence(int startIndex, int endIndex, bool useCache, int timeoutMs, long maxMemoryMB)
     {
         try
         {
-            var result = await _fibonacciService.GenerateFibonacciSubsequenceAsync(startIndex, endIndex, useCache, timeoutMs, maxMemoryBytes);
+            var request = new FibonacciRequest
+            {
+                StartIndex = startIndex,
+                EndIndex = endIndex,
+                UseCache = useCache,
+                TimeoutMs = timeoutMs,
+                MaxMemoryMB = maxMemoryMB
+            };
+            var result = await _fibonacciService.GenerateFibonacciSubsequenceAsync(request);
             return Ok(result);
         }
         catch (TimeoutException)

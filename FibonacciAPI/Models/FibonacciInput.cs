@@ -6,5 +6,5 @@ public class FibonacciRequest
     public int EndIndex { get; set; }
     public bool UseCache { get; set; }
     public int TimeoutMs { get; set; }
-    public long MaxMemoryBytes { get; set; }
+    public long MaxMemoryMB { get; set; }
 }

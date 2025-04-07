@@ -18,7 +18,7 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-        builder.Services.AddScoped<IFibonacciService, FibonacciService>();
+        builder.Services.AddScoped<IFibonacciService, Fibonacci>();
         builder.Services.AddScoped<IFibonacciCache, FibonacciMemoryCache>();
 
 

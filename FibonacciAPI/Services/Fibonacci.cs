@@ -4,14 +4,14 @@ using System.Numerics;
 using FibonacciAPI.Interfaces;
 using FibonacciAPI.Models;
 
-public class FibonacciService : IFibonacciService
+public class Fibonacci : IFibonacciService
 {
     private readonly IFibonacciCache _cache;
     private List<long> MemoryRecord = new();
     private long MemoryLimit;
     private TimeSpan TimeoutLimit;
 
-    public FibonacciService(IFibonacciCache cache)
+    public Fibonacci(IFibonacciCache cache)
     {
         _cache = cache;
     }

@@ -6,15 +6,15 @@ using Assert = NUnit.Framework.Assert;
 
 namespace FibonacciAPI_Tests;
 
-public class FibonacciServiceTests
+public class FibonacciTests
 {
     private readonly Mock<IFibonacciCache> _mockCache;
-    private readonly FibonacciService _service;
+    private readonly Fibonacci _service;
 
-    public FibonacciServiceTests()
+    public FibonacciTests()
     {
         _mockCache = new Mock<IFibonacciCache>();
-        _service = new FibonacciService(_mockCache.Object);
+        _service = new Fibonacci(_mockCache.Object);
     }
 
     public static IEnumerable<object[]> FibonacciTestData =>
